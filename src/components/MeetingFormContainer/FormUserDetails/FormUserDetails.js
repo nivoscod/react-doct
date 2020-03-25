@@ -9,7 +9,7 @@ export class FormUserDetails extends Component {
 
     disabledButton = (formErrors, values) => {
       let hasErrors = Object.values(formErrors).some(element => element.length > 0);
-      let isFormEmpty = Object.values(values).some(e => (e.length == 0))
+      let isFormEmpty = Object.values(values).some(e => (e.length === 0))
       return hasErrors || isFormEmpty;
     }
     

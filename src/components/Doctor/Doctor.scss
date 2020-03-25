@@ -4,6 +4,11 @@
   background: $mainGrey;
   border-radius: 0.8rem;;
   margin: 1rem 0;
+  height: 400px;
+
+  &.open {
+    height: auto;
+  }
   img {
     width: 100%;
     border-top-left-radius: 0.8rem;

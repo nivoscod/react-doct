@@ -17,14 +17,14 @@ export default class DoctorsList extends Component {
     render() { 
         const {doctors} = this.state;
         return (
-            <section className="doctorsList">
+            <div className="doctorsList">
                 {doctors.map(doctor => (<Doctor
                      key={doctor.id}
                      doctor={doctor} 
                      removeDoctor={this.removeDoctor}
                       > 
                       </Doctor>))}
-            </section>
+            </div>
         );
     }
 }

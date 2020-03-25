@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import './FormMedicalDetails.scss';
-
+import Checkbox from './../Checkbox';
+import MedicalHisOptions from './../../../consts';
 
 export class FormMedicalDetails extends Component {
     continute = e => {
@@ -15,13 +16,24 @@ export class FormMedicalDetails extends Component {
 
     disabledButton = (formErrors, values) => {
       let hasErrors = Object.values(formErrors).some(element => element.length > 0);
-      let isFormEmpty = Object.values(values).some(e => (e.length == 0))
+      let isFormEmpty = Object.values(values).some(e => (e.length === 0))
       return hasErrors || isFormEmpty;
     }
 
 
+    createCheckbox = option => (
+      <Checkbox
+        label={option}
+        isSelected={this.props.values.checkboxes[option]}
+        onCheckboxChange={this.props.handleCheckboxChange}
+        key={option}
+      />
+    );
+  
+    createCheckboxes = () => MedicalHisOptions.map(option => this.createCheckbox(option));
+
     render() {
-        const { values, handleChange, handleSmokerChange, createCheckboxes, formErrors  } = this.props;
+        const { values, handleChange, handleSmokerChange, formErrors  } = this.props;
         //<button type="submit" disabled={this.disabledButton(formErrors, values)} onClick={this.continute}>Continute</button>
 
         
@@ -63,18 +75,18 @@ export class FormMedicalDetails extends Component {
               </div>
 
             <label htmlFor="medicalHis">Medical History Diagnosis:</label>
-            <div className="medical-ckbox">{createCheckboxes()}</div>
+            <div className="medical-ckbox">{this.createCheckboxes()}</div>
 
             <label htmlFor="medicalHis">Are you a smoker?</label>
             <div className="medical-radio">
                 <label>
-                  <input type="radio" value="yes" checked={values.smoker == 'yes'} onChange={handleSmokerChange} />
+                  <input type="radio" value="yes" checked={values.smoker === 'yes'} onChange={handleSmokerChange} />
                   {' Yes'}
                 </label>
             </div>
             <div className="medical-radio">
                 <label>
-                  <input type="radio" value="no" checked={values.smoker == 'no'} onChange={handleSmokerChange} />
+                  <input type="radio" value="no" checked={values.smoker === 'no'} onChange={handleSmokerChange} />
                   {' No'}
                 </label>
             </div> 

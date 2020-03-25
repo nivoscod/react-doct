@@ -2,16 +2,12 @@ import React, { Component } from 'react'
 import FormUserDetails from "./FormUserDetails/FormUserDetails";
 import FormMedicalDetails from "./FormMedicalDetails/FormMedicalDetails";
 import FormChooseDate from "./FormChooseDate/FormChooseDate"
-import Checkbox from './Checkbox';
-import SelectBox from './FormChooseDate/SelectBox';
 import {appointmentsData} from "../appointmentsData";
-import { wait } from '@testing-library/react';
-
+import MedicalHisOptions from './../../consts';
 
 const emailRegex = RegExp(
     /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
   );
-const OPTIONS = ["High Blood-Pressure", "Glocuse", "Obesity", "Chronic illness"];
 
 export class MeetingFormContainer extends Component {
   state= {
@@ -23,9 +19,9 @@ export class MeetingFormContainer extends Component {
       id: '',
       weight: '',
       height: '',
-      checkboxes: OPTIONS.reduce(
-        (options, option) => ({
-          ...options,
+      checkboxes: MedicalHisOptions.reduce(
+        (MedicalHisOptions, option) => ({
+          ...MedicalHisOptions,
           [option]: false,
         }),
         {}
@@ -42,34 +38,13 @@ export class MeetingFormContainer extends Component {
       },
       appointmentsData: appointmentsData,
       appointment: {
+        year: "",
         month: "",
-        monthIndex: "",
         day: "",
         hour: ""
       }
 
   }
-
-  createCheckbox = option => (
-    <Checkbox
-      label={option}
-      isSelected={this.state.checkboxes[option]}
-      onCheckboxChange={this.handleCheckboxChange}
-      key={option}
-    />
-  );
-
-  createSelectbox = (type, items) => (
-        <SelectBox
-        appointment={this.state.appointment}
-        items={items}
-        handleSelectChange={this.handleSelectChange}
-        type={type}
-      />
-  );
-
-  createCheckboxes = () => OPTIONS.map(option => this.createCheckbox(option));
-
 
   handleSmokerChange = e => {
     this.setState({
@@ -77,41 +52,32 @@ export class MeetingFormContainer extends Component {
     })}
 
   handleCheckboxChange = changeEvent => {
+    let checkboxes = { ...this.state.checkboxes };
     const { name } = changeEvent.target;
-
-    this.setState(prevState => ({
-      checkboxes: {
-        ...prevState.checkboxes,
-        [name]: !prevState.checkboxes[name]
-      }
-    }));
+    checkboxes[name] = !this.state.checkboxes[name]
+    this.setState({ checkboxes });
   };
 
-  handleSelectChange = (type, item) => {
-    console.log(type, item)
-    switch(type) {
-      case "month":
-        this.setState(prevState => ({
-          appointment: {
-            ...prevState.appointment,
-            ['month']: item.month,
-            ['monthIndex']: item.id
-          }
-        }));
+  handleSelectChange = name => (e) => {
+    let appointment = { ...this.state.appointment };
+    switch(name) {
+      case "year":
+        appointment.month = '';
+        appointment.day = '';
+        appointment.hour = ''
         break;
-      case "day":
-        this.setState(prevState => ({
-          appointment: {
-            ...prevState.appointment,
-            ['day']: item,
-          }
-        }));
+      case "month":
+        appointment.day = '';
+        appointment.hour = '';
         break;
       default:
         break;
     }
-  };
 
+    appointment[name] = e.target.value
+    this.setState({ appointment});
+      
+}
 
   // Procees to next step
   nextStep = () => {
@@ -171,7 +137,7 @@ export class MeetingFormContainer extends Component {
         const { step } = this.state;
         const { firstName, lastName, email, city, id, formErrors, checkboxes, weight, height, smoker, appointment } = this.state;
         const valuesform1 = { firstName, lastName, email, city, id }
-        const valuesform2 = { checkboxes, weight, height, smoker }
+        const valuesform2 = { checkboxes , weight, height, smoker }
 
         switch(step) {
             case 1:
@@ -192,14 +158,16 @@ export class MeetingFormContainer extends Component {
                         values={valuesform2}
                         formErrors={formErrors}
                         handleSmokerChange= {this.handleSmokerChange}
-                        createCheckboxes={this.createCheckboxes} />
+                        createCheckboxes={this.createCheckboxes}
+                        handleCheckboxChange={this.handleCheckboxChange} />
                 )
             case 3:
                 return (
                   <FormChooseDate 
+                    nextStep={this.nextStep}
+                    prevStep={this.prevStep}
                     appointmentDetails={appointment}
-                    appointmentsData={appointmentsData}
-                    createSelectBox={this.createSelectbox} />
+                    handleSelectChange={this.handleSelectChange} />
                   )
             case 4:
                 return <h1>Success</h1>

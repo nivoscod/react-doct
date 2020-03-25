@@ -16,7 +16,7 @@ export default class Doctor extends Component {
     const { id, field, img, name, info } = this.props.doctor;
     const { removeDoctor } = this.props;
     return (
-      <article className='doctor'>
+      <div className={`doctor ${this.state.showInfo ? "open": ""}`}>
         <div className="img-container">
           <img src={img} alt="" />
           <span
@@ -54,7 +54,7 @@ export default class Doctor extends Component {
               <i className="far fa-question-circle"></i>
           </span></h5>
         </div>
-      </article>
+      </div>
     );
   }
 }
